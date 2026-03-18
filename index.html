@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Bubu Galaxy</title>
+    <style>
+      :root {
+        --pink-soft: #fce4ec;
+        --pink-bright: #ff80ab;
+        --galaxy-bg: #1a0a1a;
+        --heart-color: #ff4081;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: var(--pink-soft);
+        overflow: hidden;
+        height: 100vh;
+        width: 100vw;
+      }
+
+      /* --- SECTION 1: VIDEO --- */
+      #video-section {
+        position: fixed;
+        inset: 0;
+        background: black;
+        z-index: 1000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: opacity 1.5s ease;
+      }
+      video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      #start-overlay {
+        position: absolute;
+        color: white;
+        cursor: pointer;
+        z-index: 1001;
+      }
+      #start-overlay p {
+        background: rgba(255, 128, 171, 0.4);
+        padding: 15px 25px;
+        border-radius: 30px;
+        border: 1px solid white;
+        backdrop-filter: blur(5px);
+        font-weight: bold;
+      }
+
+      /* --- SECTION 2: GALAXY TATA SURYA --- */
+      #galaxy-section {
+        height: 100vh;
+        width: 100vw;
+        background: radial-gradient(
+          circle at center,
+          #3d0e3d 0%,
+          var(--galaxy-bg) 100%
+        );
+        display: none;
+        position: relative;
+        overflow: hidden;
+        opacity: 0;
+        transition: opacity 2s ease;
+      }
+
+      .sun-heart {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 45px;
+        color: var(--heart-color);
+        text-shadow: 0 0 25px var(--pink-bright);
+        z-index: 10;
+        animation: pulse-heart 2s infinite;
+        cursor: default;
+      }
+
+      @keyframes pulse-heart {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          filter: drop-shadow(0 0 5px var(--pink-bright));
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.2);
+          filter: drop-shadow(0 0 15px var(--pink-bright));
+        }
+      }
+
+      .orbit {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        border: 1px solid rgba(255, 182, 193, 0.15);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        animation: rotate-clockwise var(--duration) linear infinite;
+        pointer-events: none;
+      }
+
+      @keyframes rotate-clockwise {
+        from {
+          transform: translate(-50%, -50%) rotate(0deg);
+        }
+        to {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
+      }
+
+      .planet {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: var(--size);
+        height: var(--size);
+        background: var(--pink-bright);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 0 15px rgba(255, 128, 171, 0.6);
+        border: 2px solid white;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        pointer-events: auto;
+        z-index: 100;
+      }
+
+      .star {
+        position: absolute;
+        background: white;
+        border-radius: 50%;
+        opacity: 0.5;
+        animation: twinkle var(--t) infinite ease-in-out;
+      }
+      @keyframes twinkle {
+        0%,
+        100% {
+          opacity: 0.2;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      /* --- PHOTO MODAL --- */
+      #photo-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 2000;
+        display: none;
+        justify-content: center;
+        align-items: center;
+      }
+      .photo-frame {
+        width: 85%;
+        max-width: 320px;
+        aspect-ratio: 3/4;
+        background: white;
+        padding: 12px;
+        border-radius: 10px;
+        border: 6px solid var(--pink-soft);
+        box-shadow: 0 0 30px rgba(255, 128, 171, 0.3);
+        transform: scale(0.5);
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+      }
+      .photo-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+      .close-hint {
+        position: absolute;
+        bottom: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-size: 12px;
+        letter-spacing: 1px;
+      }
+    </style>
+  </head>
+  <body>
+    <audio id="bg-music" loop>
+      <source src="masha.mp3" type="audio/mpeg" />
+    </audio>
+
+    <section id="video-section">
+      <video id="intro-video" muted playsinline>
+        <source src="vt.mp4" type="video/mp4" />
+      </video>
+      <div id="start-overlay" onclick="startApp()">
+        <p>Klik untuk Mulai ✨</p>
+      </div>
+    </section>
+
+    <section id="galaxy-section">
+      <div class="sun-heart">❤️</div>
+      <div class="orbit" style="width: 110px; height: 110px; --duration: 9s">
+        <div class="planet" style="--size: 28px" onclick="openPhoto('1.jpeg')">
+          🌸
+        </div>
+      </div>
+      <div class="orbit" style="width: 170px; height: 170px; --duration: 13s">
+        <div class="planet" style="--size: 32px" onclick="openPhoto('2.jpeg')">
+          ✨
+        </div>
+      </div>
+      <div class="orbit" style="width: 240px; height: 240px; --duration: 18s">
+        <div class="planet" style="--size: 30px" onclick="openPhoto('3.jpeg')">
+          ☁️
+        </div>
+      </div>
+      <div class="orbit" style="width: 310px; height: 310px; --duration: 22s">
+        <div class="planet" style="--size: 34px" onclick="openPhoto('4.jpeg')">
+          🎀
+        </div>
+      </div>
+      <div class="orbit" style="width: 380px; height: 380px; --duration: 27s">
+        <div class="planet" style="--size: 32px" onclick="openPhoto('11.jpeg')">
+          🍭
+        </div>
+      </div>
+      <div class="orbit" style="width: 450px; height: 450px; --duration: 32s">
+        <div class="planet" style="--size: 36px" onclick="openPhoto('6.jpeg')">
+          🌙
+        </div>
+      </div>
+      <div class="orbit" style="width: 530px; height: 530px; --duration: 38s">
+        <div class="planet" style="--size: 40px" onclick="openPhoto('7.jpeg')">
+          💎
+        </div>
+      </div>
+    </section>
+
+    <div id="photo-modal" onclick="closePhoto()">
+      <div class="photo-frame" id="frame">
+        <img src="" id="target-img" />
+        <p class="close-hint">Ketuk di mana saja untuk tutup</p>
+      </div>
+    </div>
+
+    <script>
+      const video = document.getElementById("intro-video");
+      const videoSection = document.getElementById("video-section");
+      const galaxySection = document.getElementById("galaxy-section");
+      const music = document.getElementById("bg-music");
+
+      function startApp() {
+        document.getElementById("start-overlay").style.display = "none";
+        video.muted = false;
+        video.play().catch((e) => console.log("Video error:", e));
+        // Music tidak di-play di sini agar video tetap sunyi
+      }
+
+      video.onended = () => {
+        videoSection.style.opacity = "0";
+        // Mulai putar lagu tepat saat video berakhir
+        music.play().catch((e) => console.log("Music error:", e));
+
+        setTimeout(() => {
+          videoSection.style.display = "none";
+          galaxySection.style.display = "block";
+          setTimeout(() => {
+            galaxySection.style.opacity = "1";
+          }, 100);
+        }, 1500);
+      };
+
+      const galaxy = document.getElementById("galaxy-section");
+      for (let i = 0; i < 120; i++) {
+        let star = document.createElement("div");
+        star.className = "star";
+        let size = Math.random() * 2;
+        star.style.width = size + "px";
+        star.style.height = size + "px";
+        star.style.left = Math.random() * 100 + "%";
+        star.style.top = Math.random() * 100 + "%";
+        star.style.setProperty("--t", Math.random() * 3 + 2 + "s");
+        galaxy.appendChild(star);
+      }
+
+      function openPhoto(src) {
+        const modal = document.getElementById("photo-modal");
+        const img = document.getElementById("target-img");
+        const frame = document.getElementById("frame");
+        img.src = src;
+        modal.style.display = "flex";
+        setTimeout(() => {
+          frame.style.transform = "scale(1)";
+        }, 50);
+      }
+
+      function closePhoto() {
+        const modal = document.getElementById("photo-modal");
+        const frame = document.getElementById("frame");
+        frame.style.transform = "scale(0.5)";
+        setTimeout(() => {
+          modal.style.display = "none";
+        }, 300);
+      }
+    </script>
+  </body>
+</html>
